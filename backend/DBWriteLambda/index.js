@@ -3,6 +3,10 @@ const ddb = new AWS.DynamoDB.DocumentClient({region: 'eu-west-2'});
 
 exports.handler = async (event, context, callback) => {
     
+    // Log environment variables & event
+    console.log("ENVIRONMENT VARIABLES\n" + JSON.stringify(process.env, null, 2));
+    console.info("EVENT\n" + JSON.stringify(event, null, 2));
+    
     if(event != null && event != undefined) {
         
         const postData = JSON.parse(event.body);
