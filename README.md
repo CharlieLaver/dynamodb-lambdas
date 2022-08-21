@@ -1,4 +1,4 @@
-# artscapy-evaluation
+# Notes
 
  ## Architecture
 My plan is to use a Vue frontend that will send HTTP requests to an AWS API gateway. This gateway will be configured with POST & GET routes that will direct the request to the relevant lambda function. The lambda functions will be connected to a DynamoDB.
@@ -17,4 +17,4 @@ The environment variables & request is going to be logged to AWS CloudWatch ever
 ## Logic
 * To prevent the risk of a XSS attack, I will remove any special characters from the users input (where they are not needed) before inserting into the database.
 * Always save the request data, after it has been validated.
-* I can save any errors to an column in the db, where they can be fetched and displayed on the table.
+* I can save any errors to a column in the db, where they can be fetched and displayed on the table.
