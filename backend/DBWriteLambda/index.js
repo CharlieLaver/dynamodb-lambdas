@@ -18,70 +18,60 @@ exports.handler = async (event, context, callback) => {
         // If the data does not pass validation still save to db but just remove any security risks
         
         // Validate name
-        if(postData.hasOwnProperty('name')) {
+        if(postData.hasOwnProperty('name') && postData.name.length) {
             if(containsSpecialChars(postData.name)) {
                 errors.push('Name contained special characters!');
             }
            saveData.name = removeSpecialChars(postData.name);
-        } else {
-            errors.push('There was no name field set!');
-            saveData.name = '';
         }
         
         // Validate email
-        if(postData.hasOwnProperty('email')) {
+        if(postData.hasOwnProperty('email') && postData.email.length) {
             if(!isValidEmail(postData.email)) {
                 errors.push('Email format is not valid!');
             }
+            // Email's can only include RFC-compliant characters
+            let unvalidEmailChars = new RegExp("[^-@._+~a-zA-Z0-9]", "g");
+            if(postData.email.match(unvalidEmailChars)) {
+                errors.push('Email contained unvalid special characters!');
+            }
             // Remove any unvalid email chars (to prevent XSS)
-            saveData.email = postData.email.replace(/[^a-zA-Z @.0-9]/g,'');
-        } else {
-            errors.push('There was no email field set!');
-            saveData.email = '';
+            saveData.email = postData.email.replace(unvalidEmailChars,'');
         }
         
         // Validate age
-        if(postData.hasOwnProperty('age')) {
+        if(postData.hasOwnProperty('age') && postData.age) {
             if(Number.isInteger(parseInt(postData.age))) {
+                if(postData.age < 0) {
+                    errors.push('Age is smaller than zero!');
+                }
                 saveData.age = postData.age;
             } else {
                 saveData.age = removeSpecialChars(postData.age.toString());
                 errors.push('Age is not of type int!');
             }
-        } else {
-            errors.push('There was no age field set');
-            saveData.age = 0;
         }
         
         // Validate dob
-        if(postData.hasOwnProperty('dob')) {
+        if(postData.hasOwnProperty('dob') && postData.dob) {
             if(Date.parse(postData.dob)) {
                 saveData.dob = postData.dob;
             } else {
                 errors.push('DOB was not a valid date!');
                 saveData.dob = removeSpecialChars(postData.dob.toString());
             }
-        } else {
-            errors.push('There was no dob field set!');
-            saveData.dob = 0;
         }
         
         // Validate favouriteArtist
-        if(postData.hasOwnProperty('favouriteArtist')) {
+        if(postData.hasOwnProperty('favouriteArtist') && postData.favouriteArtist.length) {
             if(containsSpecialChars(postData.favouriteArtist)) {
                 errors.push('favouriteArtist contained special characters!');
             }
            saveData.favouriteArtist = removeSpecialChars(postData.favouriteArtist);
-        } else {
-            errors.push('There is no favouriteArtist field set!');
-            saveData.favouriteArtist = '';
         }
         
         if(postData.hasOwnProperty('newsletterSignup')) {
             saveData.newsletterSignup = postData.newsletterSignup ? true : false;
-        } else {
-            errors.push('There is no newsletterSignup field set!');
-            saveData.newsletterSignup = false;
         }
         
         saveData.errors = errors;

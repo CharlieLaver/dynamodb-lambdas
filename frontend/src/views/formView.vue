@@ -60,7 +60,7 @@
         }
       },
       hasData() {
-        if(this.formData.name.length || this.formData.email.length || this.formData.age || this.formData.dob) {
+        if(this.formData.name.length || this.formData.email.length || this.formData.favouriteArtist.length || this.formData.age || this.formData.dob) {
           return true;
         }
         return false;
